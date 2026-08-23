@@ -81,49 +81,49 @@ RUN bundle init \
     '  <button id="lt-check-btn" class="btn btn-primary mb-3">Check text</button>' \
     '  <div id="lt-results"></div>' \
     '</div>' \
-    '<script>' \
-    '  document.addEventListener("DOMContentLoaded", function () {' \
-    '    var btn = document.getElementById("lt-check-btn");' \
-    '    var textArea = document.getElementById("lt-text");' \
-    '    var results = document.getElementById("lt-results");' \
-    '    if (!btn) return;' \
-    '    btn.addEventListener("click", function () {' \
-    '      var token = document.querySelector("meta[name=csrf-token]").content;' \
-    '      results.innerHTML = "Checking...";' \
-    '      fetch("/languagetool/check", {' \
-    '        method: "POST",' \
-    '        headers: {' \
-    '          "Content-Type": "application/x-www-form-urlencoded",' \
-    '          "X-CSRF-Token": token,' \
-    '          "Accept": "application/json"' \
-    '        },' \
-    '        body: "text=" + encodeURIComponent(textArea.value) + "&language=auto"' \
-    '      })' \
-    '        .then(function (r) { return r.json(); })' \
-    '        .then(function (data) {' \
-    '          var matches = data.matches || [];' \
-    '          if (matches.length === 0) {' \
-    '            results.innerHTML = "<p class=\x27text-success\x27>No issues found.</p>";' \
-    '            return;' \
-    '          }' \
-    '          var html = "<ul class=\x27list-group\x27>";' \
-    '          matches.forEach(function (m) {' \
-    '            html += "<li class=\x27list-group-item\x27><strong>" + m.message + "</strong>";' \
-    '            if (m.replacements && m.replacements.length) {' \
-    '              html += "<br>Suggestions: " + m.replacements.slice(0, 5).map(function (s) { return s.value; }).join(", ");' \
-    '            }' \
-    '            html += "</li>";' \
-    '          });' \
-    '          html += "</ul>";' \
-    '          results.innerHTML = html;' \
-    '        })' \
-    '        .catch(function (err) {' \
-    '          results.innerHTML = "<p class=\x27text-danger\x27>Error: " + err + "</p>";' \
-    '        });' \
-    '    });' \
-    '  });' \
-    '</script>' \
     >> app/views/welcome/index.html.erb \
+  && printf '%s\n' \
+    'document.addEventListener("DOMContentLoaded", function () {' \
+    '  var btn = document.getElementById("lt-check-btn");' \
+    '  var textArea = document.getElementById("lt-text");' \
+    '  var results = document.getElementById("lt-results");' \
+    '  if (!btn) return;' \
+    '  btn.addEventListener("click", function () {' \
+    '    var token = document.querySelector("meta[name=csrf-token]").content;' \
+    '    results.innerHTML = "Checking...";' \
+    '    fetch("/languagetool/check", {' \
+    '      method: "POST",' \
+    '      headers: {' \
+    '        "Content-Type": "application/x-www-form-urlencoded",' \
+    '        "X-CSRF-Token": token,' \
+    '        "Accept": "application/json"' \
+    '      },' \
+    '      body: "text=" + encodeURIComponent(textArea.value) + "&language=auto"' \
+    '    })' \
+    '      .then(function (r) { return r.json(); })' \
+    '      .then(function (data) {' \
+    '        var matches = data.matches || [];' \
+    '        if (matches.length === 0) {' \
+    '          results.innerHTML = "<p class=\x27text-success\x27>No issues found.</p>";' \
+    '          return;' \
+    '        }' \
+    '        var html = "<ul class=\x27list-group\x27>";' \
+    '        matches.forEach(function (m) {' \
+    '          html += "<li class=\x27list-group-item\x27><strong>" + m.message + "</strong>";' \
+    '          if (m.replacements && m.replacements.length) {' \
+    '            html += "<br>Suggestions: " + m.replacements.slice(0, 5).map(function (s) { return s.value; }).join(", ");' \
+    '          }' \
+    '          html += "</li>";' \
+    '        });' \
+    '        html += "</ul>";' \
+    '        results.innerHTML = html;' \
+    '      })' \
+    '      .catch(function (err) {' \
+    '        results.innerHTML = "<p class=\x27text-danger\x27>Error: " + err + "</p>";' \
+    '      });' \
+    '  });' \
+    '});' \
+    >> app/javascript/application.js \
   && bundle exec rails assets:precompile
 
 # new stage for Rails app
