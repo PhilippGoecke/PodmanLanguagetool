@@ -7,7 +7,7 @@ set -euo pipefail
 
 LT_URL="${LT_URL:-http://localhost:8010/v2/check}"
 TEXT="${1:-Das ist ein deutscher Testsatz mit Fehler.}"
-LANGUAGE="${LANGUAGE:-en-US}"
+LANGUAGE="${LANGUAGE:-de-DE}"
 
 echo "Sending text to LanguageTool: $TEXT"
 echo "Endpoint: $LT_URL"
