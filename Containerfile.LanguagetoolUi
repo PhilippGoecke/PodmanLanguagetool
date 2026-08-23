@@ -58,6 +58,10 @@ RUN bundle init \
   # LanguageTool integration: controller proxying to local LanguageTool server
   && printf '%s\n' \
     'class LanguagetoolController < ApplicationController' \
+    'skip_before_action :verify_authenticity_token, only: [:check]' \
+    '' \
+    'require "net/http"' \
+    '' \
     '  def check' \
     '    uri = URI.join(languagetool_base_url, "/v2/check")' \
     '    response = Net::HTTP.post_form(uri, text: params[:text], language: params[:language] || "auto")' \
@@ -153,6 +157,7 @@ WORKDIR /rails/demo
 RUN mkdir -p tmp/sockets tmp/pids tmp/cache log storage
 
 ENV RAILS_ENV=production
+ENV LANGUAGETOOL_URL=http://host.containers.internal:8010
 
 EXPOSE 3000
 
