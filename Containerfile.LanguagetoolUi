@@ -1,4 +1,4 @@
-FROM debian:trixie-slim as install
+FROM debian:trixie-slim AS install
 
 ARG DEBIAN_FRONTEND=noninteractive
 
@@ -84,6 +84,8 @@ RUN bundle init \
     '  <textarea id="lt-text" class="form-control mb-2" rows="6" placeholder="Type text to check..."></textarea>' \
     '  <button id="lt-check-btn" class="btn btn-primary mb-3">Check text</button>' \
     '  <div id="lt-results"></div>' \
+    '  <h4 class="mt-3">Corrected Text</h4>' \
+    '  <div id="lt-corrected" class="border rounded p-2 bg-light"></div>' \
     '</div>' \
     >> app/views/welcome/index.html.erb \
   && printf '%s\n' \
@@ -91,6 +93,7 @@ RUN bundle init \
     '  var btn = document.getElementById("lt-check-btn");' \
     '  var textArea = document.getElementById("lt-text");' \
     '  var results = document.getElementById("lt-results");' \
+    '  var corrected = document.getElementById("lt-corrected");' \
     '  if (!btn) return;' \
     '  btn.addEventListener("click", function () {' \
     '    var token = document.querySelector("meta[name=csrf-token]").content;' \
@@ -107,8 +110,10 @@ RUN bundle init \
     '      .then(function (r) { return r.json(); })' \
     '      .then(function (data) {' \
     '        var matches = data.matches || [];' \
+    '        var originalText = textArea.value;' \
     '        if (matches.length === 0) {' \
     '          results.innerHTML = "<p class=\x27text-success\x27>No issues found.</p>";' \
+    '          corrected.textContent = originalText;' \
     '          return;' \
     '        }' \
     '        var html = "<ul class=\x27list-group\x27>";' \
@@ -121,6 +126,16 @@ RUN bundle init \
     '        });' \
     '        html += "</ul>";' \
     '        results.innerHTML = html;' \
+    '' \
+    '        var sorted = matches.slice().sort(function (a, b) { return b.offset - a.offset; });' \
+    '        var fixedText = originalText;' \
+    '        sorted.forEach(function (m) {' \
+    '          if (m.replacements && m.replacements.length) {' \
+    '            var replacement = m.replacements[0].value;' \
+    '            fixedText = fixedText.slice(0, m.offset) + replacement + fixedText.slice(m.offset + m.length);' \
+    '          }' \
+    '        });' \
+    '        corrected.textContent = fixedText;' \
     '      })' \
     '      .catch(function (err) {' \
     '        results.innerHTML = "<p class=\x27text-danger\x27>Error: " + err + "</p>";' \
@@ -131,7 +146,7 @@ RUN bundle init \
   && bundle exec rails assets:precompile
 
 # new stage for Rails app
-FROM debian:trixie-slim as rails
+FROM debian:trixie-slim AS rails
 
 # install dependencies
 RUN apt update && apt upgrade -y \
