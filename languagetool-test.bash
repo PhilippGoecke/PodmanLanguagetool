@@ -6,7 +6,7 @@ set -euo pipefail
 # You can also use the public API: https://api.languagetool.org
 
 LT_URL="${LT_URL:-http://localhost:8010/v2/check}"
-TEXT="${1:-Das ist ein deutscher Testsatz mit Fehler.}"
+TEXT="${1:-Das ist ein deutscher Testsatz mit Fehlär.}"
 LANGUAGE="${LANGUAGE:-de-DE}"
 
 echo "Sending text to LanguageTool: $TEXT"
