@@ -103,12 +103,12 @@ RUN bundle init \
     '        .then(function (data) {' \
     '          var matches = data.matches || [];' \
     '          if (matches.length === 0) {' \
-    "            results.innerHTML = '"'"'<p class=\"text-success\">No issues found.</p>'"'"';" \
+    '            results.innerHTML = "<p class=\x27text-success\x27>No issues found.</p>";' \
     '            return;' \
     '          }' \
-    '          var html = "<ul class=\"list-group\">";' \
+    '          var html = "<ul class=\x27list-group\x27>";' \
     '          matches.forEach(function (m) {' \
-    '            html += "<li class=\"list-group-item\"><strong>" + m.message + "</strong>";' \
+    '            html += "<li class=\x27list-group-item\x27><strong>" + m.message + "</strong>";' \
     '            if (m.replacements && m.replacements.length) {' \
     '              html += "<br>Suggestions: " + m.replacements.slice(0, 5).map(function (s) { return s.value; }).join(", ");' \
     '            }' \
@@ -118,7 +118,7 @@ RUN bundle init \
     '          results.innerHTML = html;' \
     '        })' \
     '        .catch(function (err) {' \
-    "          results.innerHTML = '"'"'<p class=\"text-danger\">Error: '"'"' + err + '"'"'</p>'"'"';" \
+    '          results.innerHTML = "<p class=\x27text-danger\x27>Error: " + err + "</p>";' \
     '        });' \
     '    });' \
     '  });' \
