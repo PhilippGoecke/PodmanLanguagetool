@@ -13,7 +13,21 @@ echo "Sending text to LanguageTool: $TEXT"
 echo "Endpoint: $LT_URL"
 echo
 
-curl -s -X POST "$LT_URL" \
+RESPONSE="$(curl -s -w "\n%{http_code}" -X POST "$LT_URL" \
   --data-urlencode "text=${TEXT}" \
-  --data-urlencode "language=${LANGUAGE}" \
-  | python3 -m json.tool
+  --data-urlencode "language=${LANGUAGE}")"
+
+HTTP_CODE="$(echo "$RESPONSE" | tail -n1)"
+BODY="$(echo "$RESPONSE" | sed '$d')"
+
+if [ "$HTTP_CODE" != "200" ]; then
+  echo "Error: LanguageTool server returned HTTP $HTTP_CODE" >&2
+  echo "$BODY" >&2
+  exit 1
+fi
+
+if ! echo "$BODY" | python3 -m json.tool; then
+  echo "Error: Response was not valid JSON:" >&2
+  echo "$BODY" >&2
+  exit 1
+fi
