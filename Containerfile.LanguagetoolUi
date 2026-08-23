@@ -88,7 +88,7 @@ RUN bundle init \
     '    var results = document.getElementById("lt-results");' \
     '    if (!btn) return;' \
     '    btn.addEventListener("click", function () {' \
-    "      var token = document.querySelector('"'"'meta[name=\"csrf-token\"]'"'"').content;" \
+    '      var token = document.querySelector("meta[name=csrf-token]").content;' \
     '      results.innerHTML = "Checking...";' \
     '      fetch("/languagetool/check", {' \
     '        method: "POST",' \
