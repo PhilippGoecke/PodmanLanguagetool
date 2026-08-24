@@ -107,7 +107,12 @@ RUN bundle init \
     '      },' \
     '      body: "text=" + encodeURIComponent(textArea.value) + "&language=auto"' \
     '    })' \
-    '      .then(function (r) { return r.json(); })' \
+    '      .then(function (r) {' \
+    '        if (!r.ok) {' \
+    '          throw new Error("Server error: " + r.status + " " + r.statusText);' \
+    '        }' \
+    '        return r.json();' \
+    '      })' \
     '      .then(function (data) {' \
     '        var matches = data.matches || [];' \
     '        var originalText = textArea.value;' \
